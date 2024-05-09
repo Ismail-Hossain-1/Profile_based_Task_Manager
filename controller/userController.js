@@ -2,13 +2,9 @@ const mysql = require('mysql');
 const bcrypt = require('bcrypt');
 const jwt= require('jsonwebtoken');
 const { v4: uuidv4 } = require("uuid");
+const config = require('../db/config');
 
-const pool = mysql.createPool({
-    host: "localhost",
-    user: "root",
-    password: "",
-    database: "task_manager"
-});
+const pool = mysql.createPool(config);
 
 pool.getConnection((err, connection) => {
     if (err) {
@@ -16,7 +12,7 @@ pool.getConnection((err, connection) => {
     }
     console.log("Connected to mysql");
     connection.release();
-})
+});
 
 
 
@@ -69,17 +65,17 @@ const loginUser = async (req, res) => {
                 res.json("Invalid Credentials");
             }
             if(result.length>0){
-                const isValid= bcrypt.compare(password, result[0].Password_);
+               
                 const user={
                     name: result[0].Name,
                     email:result[0].Email,
                     role: result[0].Role
                 };
 
-                const token = jwt.sign(user, process.env.JWT_TOKEN);
+               
 
 
-                res.cookie('token', token).json(user);
+                res.json(user);
                 
             }
 
