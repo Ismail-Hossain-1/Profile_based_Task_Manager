@@ -31,7 +31,7 @@ const createUser = async (req, res) => {
                 pool.query(`INSERT INTO tbl_users (Id, Name, Email, Password_) VALUES (?,?, ?, ?)`, [id, name, email, hashedPassword],
                     (err, result1) => {
                         if (err) throw err;
-                        res.json(result1);
+                        res.json('Account Created');
                     })
             }
             else if (result.length > 0) {
@@ -47,16 +47,13 @@ const createUser = async (req, res) => {
 }
 
 const loginUser = async (req, res) => {
+    console.log(req.body);
 
     const { email, password } = req.body;
     if (!email || !password) {
         res.status(400).json({ error: "Invalid Credentials" });
         return;
     }
-
-
-
-
 
     await pool.query('SELECT * FROM tbl_users WHERE Email = ?', [email], function (err, result) {
         try {
@@ -73,9 +70,12 @@ const loginUser = async (req, res) => {
                 };
 
                
+                const token = jwt.sign(user, process.env.JWT_TOKEN);
 
 
-                res.json(user);
+               // res.setHeader('Authorization', `${token}`)
+                res.json(token);
+                console.log(token);
                 
             }
 

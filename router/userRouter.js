@@ -5,7 +5,10 @@ const cors= require('cors');
 const { createUser, loginUser, logout } = require('../controller/userController');
 
 
-router.use(cors());
+router.use(cors({
+    credentials:true,
+    origin:"http://localhost:5173"
+}));
 
 
 router.post('/createuser', createUser);
